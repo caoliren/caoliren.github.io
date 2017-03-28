@@ -76,7 +76,51 @@
 </div>
 <div class="entry" id="main">
 <!-- content -->
+<p>这里写图片描述
+<img>
+.rdo {
+    width: 20px;
+    height: 0px;
+    background-color: #000;
+    margin-right: 30px;
+    border-radius: 50%;
+    position: relative;
+}
+.rdo:before,.rdo:after {
+    content: '';
+    display: block;
+    position: absolute;
+    border-radius: 50%;
+    transition: .3s ease;
+}
+.rdo:before {
+    top: 0px;
+    left: 0px;
+    width: 18px;
+    height: 18px;
+    background-color: #fff;
+    border: 1px solid #000;
+}
+.rdo:after {
+    top: 6px;
+    left: 6px;
+    width: 8px;
+    height: 8px;
+    background-color: #fff; 
+}
+.rdo:checked:after {
+    top: 4px;
+    left: 4px;
+    width: 12px;
+    height: 12px;
+    background-color:#ea879a; 
+}
+.rdo:checked:before {
+    border-color:#ea879a; 
+}</p>
 
+<p><input type="radio" class="rdo" name="sex" checked="">
+<input type="radio" class="rdo" name="sex"></p>
 <!-- content end -->
 </div>
 <br>
