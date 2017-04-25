@@ -1,0 +1,233 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta name="Keywords" content="blog"/>
+    <meta name="Description" content="blog"/>
+    <title>Simple</title>
+    <link rel="shortcut icon" href="/static/favicon.png"/>
+    <link rel="stylesheet" type="text/css" href="/main.css" />
+</head>
+<body>
+<div class="main">
+    <div class="header">
+    	<ul id="pages">
+            <li><a href="/">home</a></li>
+            <li><a href="/#/tags">tags</a></li>
+            <li><a href="/#/archive">archive</a></li>
+    	</ul>
+    </div>
+	<div class="wrap-header">
+	<h1>
+    <a href="/" id="title"></a>
+	</h1>
+	</div>
+<div id="md" style="display: none;">
+<!-- markdown -->
+关于单行文本移出省略号此前已经有过总结
+[单行文本溢出省略号](http://www.clramw.top/?p=150)
+但是很多场景可能不是单行文本而是多行文本溢出的需求，今天我们来探讨一下多行文本溢出的情况怎么办？
+### 1.借助wenkit的css拓展属性
+```css
+div {
+	width:400px;
+	height:70px;
+	border:1px solid red;
+}
+p {
+	display: -webkit-box;//对象作为弹性伸缩盒子模型显示 
+	-webkit-box-orient: vertical;//设置或检索伸缩盒对象的子元素的排列方式 
+	-webkit-line-clamp: 2;//溢出省略的界限(行)
+	overflow:hidden;//隐藏溢出元素
+}
+```
+```html
+<div>
+	<p>这是一些文本这是一些文本这是一些文本这是一些文本这是一些文本这是一些文本这是一些文本这是一些文本这是一些文本这是一些文本</p>
+</div>
+```
+效果：
+
+![webkit属性解决多行文本溢出](http://images2015.cnblogs.com/blog/1060770/201704/1060770-20170408163935878-1100349037.png)
+
+既然这是`webkit`内核特有的属性兼容性问题就一定存在，好在移动端大部分浏览器都是webkit内核或者是基于webkit内核二次开发的内核例如苹果的Safari、腾讯的X5内核等等。所以尽管这种办法在PC端受限很大，但是如果只考虑移动端还是可行的。
+### 2.有兼容性问题找JS
+很多兼容性问题当我们用`CSS`当然就找`JS`了。
+```css
+div {
+	width:200px;
+	height:70px;
+	border:1px solid red;
+	overflow:auto;
+}
+```
+```html
+<div id='view'></div>
+```
+```javascript
+let str = '这是一个文本这是一个文本这是一个文本这是一个文本这是一个文本这是一个文本这是一个文本';
+let ele = document.getElementById('view');
+let ofH = ele.offsetHeight;
+for(let i = 0,len = str.length;i < len;i++){
+	ele.innerHTML = str.slice(0,i);
+	if (ele.offsetHeight < ele.scrollHeight){
+		ele.style.overflow = 'hidden';
+		ele.innerHTML = str.slice(0,i-3) + '...';
+		break;
+	}
+}
+```
+效果:
+
+![js解决多行文本省略号](http://images2015.cnblogs.com/blog/1060770/201704/1060770-20170408164259097-1436037000.png)
+
+如果有不明白`scrollHeight`的请查阅一下资料 [MDN-scrollHeight](https://developer.mozilla.org/en-US/docs/Web/API/Element/scrollHeight)。
+当文本未溢出时 `ele.offsetHeight = ele.scrollHeight`,溢出时的情况如下图
+![文本溢出容器时scrollHeight和offsetHeight对比](http://images2015.cnblogs.com/blog/1060770/201704/1060770-20170408164336535-1445932096.png)
+
+从上图中就非常好理解`offsetHeight`和`scrollHeight`的差异了。
+
+
+<!-- markdown end -->
+</div>
+<div class="entry" id="main">
+<!-- content -->
+<p>关于单行文本移出省略号此前已经有过总结
+<a href="http://www.clramw.top/?p=150">单行文本溢出省略号</a>
+但是很多场景可能不是单行文本而是多行文本溢出的需求，今天我们来探讨一下多行文本溢出的情况怎么办？</p>
+
+<h3 id="1wenkitcss">1.借助wenkit的css拓展属性</h3>
+
+<pre><code class="css">div {
+    width:400px;
+    height:70px;
+    border:1px solid red;
+}
+p {
+    display: -webkit-box;//对象作为弹性伸缩盒子模型显示 
+    -webkit-box-orient: vertical;//设置或检索伸缩盒对象的子元素的排列方式 
+    -webkit-line-clamp: 2;//溢出省略的界限(行)
+    overflow:hidden;//隐藏溢出元素
+}
+</code></pre>
+
+<pre><code class="html">&lt;div&gt;
+    &lt;p&gt;这是一些文本这是一些文本这是一些文本这是一些文本这是一些文本这是一些文本这是一些文本这是一些文本这是一些文本这是一些文本&lt;/p&gt;
+&lt;/div&gt;
+</code></pre>
+
+<p>效果：</p>
+
+<p><img src="http://images2015.cnblogs.com/blog/1060770/201704/1060770-20170408163935878-1100349037.png" alt="webkit属性解决多行文本溢出" title=""></p>
+
+<p>既然这是<code>webkit</code>内核特有的属性兼容性问题就一定存在，好在移动端大部分浏览器都是webkit内核或者是基于webkit内核二次开发的内核例如苹果的Safari、腾讯的X5内核等等。所以尽管这种办法在PC端受限很大，但是如果只考虑移动端还是可行的。</p>
+
+<h3 id="2js">2.有兼容性问题找JS</h3>
+
+<p>很多兼容性问题当我们用<code>CSS</code>当然就找<code>JS</code>了。</p>
+
+<pre><code class="css">div {
+    width:200px;
+    height:70px;
+    border:1px solid red;
+    overflow:auto;
+}
+</code></pre>
+
+<pre><code class="html">&lt;div id='view'&gt;&lt;/div&gt;
+</code></pre>
+
+<pre><code class="javascript">let str = '这是一个文本这是一个文本这是一个文本这是一个文本这是一个文本这是一个文本这是一个文本';
+let ele = document.getElementById('view');
+let ofH = ele.offsetHeight;
+for(let i = 0,len = str.length;i &lt; len;i++){
+    ele.innerHTML = str.slice(0,i);
+    if (ele.offsetHeight &lt; ele.scrollHeight){
+        ele.style.overflow = 'hidden';
+        ele.innerHTML = str.slice(0,i-3) + '...';
+        break;
+    }
+}
+</code></pre>
+
+<p>效果:</p>
+
+<p><img src="http://images2015.cnblogs.com/blog/1060770/201704/1060770-20170408164259097-1436037000.png" alt="js解决多行文本省略号" title=""></p>
+
+<p>如果有不明白<code>scrollHeight</code>的请查阅一下资料 <a href="https://developer.mozilla.org/en-US/docs/Web/API/Element/scrollHeight">MDN-scrollHeight</a>。
+当文本未溢出时 <code>ele.offsetHeight = ele.scrollHeight</code>,溢出时的情况如下图
+<img src="http://images2015.cnblogs.com/blog/1060770/201704/1060770-20170408164336535-1445932096.png" alt="文本溢出容器时scrollHeight和offsetHeight对比" title=""></p>
+
+<p>从上图中就非常好理解<code>offsetHeight</code>和<code>scrollHeight</code>的差异了。</p>
+<!-- content end -->
+</div>
+<br>
+<br>
+    <div id="disqus_thread"></div>
+	<div class="footer">
+		<p>© Copyright 2014 by isnowfy, Designed by isnowfy</p>
+	</div>
+</div>
+<script src="main.js"></script>
+<script id="content" type="text/mustache">
+    <h1>{{title}}</h1>
+    <div class="tag">
+    {{date}}
+    {{#tags}}
+    <a href="/#/tag/{{name}}">#{{name}}</a>
+    {{/tags}}
+    </div>
+</script>
+<script id="pagesTemplate" type="text/mustache">
+    {{#pages}}
+    <li>
+        <a href="{{path}}">{{title}}</a>
+    </li>
+    {{/pages}}
+</script>
+<script>
+$(document).ready(function() {
+    $.ajax({
+        url: "main.json",
+        type: "GET",
+        dataType: "json",
+        success: function(data) {
+            $("#title").html(data.name);
+            var pagesTemplate = Hogan.compile($("#pagesTemplate").html());
+            var pagesHtml = pagesTemplate.render({"pages": data.pages});
+            $("#pages").append(pagesHtml);
+            //path
+            var path = "多行文本溢出省略号.html";
+            //path end
+            var now = 0;
+            for (var i = 0; i < data.posts.length; ++i)
+                if (path == data.posts[i].path)
+                    now = i;
+            var post = data.posts[now];
+            var tmp = post.tags.split(" ");
+            var tags = [];
+            for (var i = 0; i < tmp.length; ++i)
+                if (tmp[i].length > 0)
+                    tags.push({"name": tmp[i]});
+            var contentTemplate = Hogan.compile($("#content").html());
+            var contentHtml = contentTemplate.render({"title": post.title, "tags": tags, "date": post.date});
+            $("#main").prepend(contentHtml);
+            if (data.disqus_shortname.length > 0) {
+                var disqus_shortname = data.disqus_shortname;
+                (function() {
+                    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+                    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+                    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+                })();
+            }
+        }
+    });
+});
+</script>
+<script src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ["\\(", "\\)"]], processEscapes: true}});
+</script>
+</body>
+</html>
