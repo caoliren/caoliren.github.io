@@ -1,0 +1,156 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta name="Keywords" content="blog"/>
+    <meta name="Description" content="blog"/>
+    <title>Simple</title>
+    <link rel="shortcut icon" href="/static/favicon.png"/>
+    <link rel="stylesheet" type="text/css" href="/main.css" />
+</head>
+<body>
+<div class="main">
+    <div class="header">
+    	<ul id="pages">
+            <li><a href="/">home</a></li>
+            <li><a href="/#/tags">tags</a></li>
+            <li><a href="/#/archive">archive</a></li>
+    	</ul>
+    </div>
+	<div class="wrap-header">
+	<h1>
+    <a href="/" id="title"></a>
+	</h1>
+	</div>
+<div id="md" style="display: none;">
+<!-- markdown -->
+最近再看面试题，看到一道阿里的面试题要求将十进制转化为二进制。这个问题不难，就是考细节。但往往就是这种细节得东西最容易忘，所以写下来分享一下也当做个人笔记了。
+```
+let num = 10;
+//十进制转二进制
+let num2 = num.toString(2);
+let num3 = 10..toString(2);
+console.log(num2,num3); // 1010 1010
+//二进制转十进制
+let n = '1010';
+let n10 = parseInt(n,2);
+console.log(n10); // 10
+```
+拓展一下，如果希望十进制转八进制、十六进制呢？
+其实从上面不难看出规律，**十进制转其他进制**的方法：
+
+`num.toString(转换后进制)`
+
+**其他进制转十进制**的方法：
+
+`parseInt(num,转换前的进制)`
+
+再来，**其他进制转其他进制**怎么算？例如十六进制数字`f5`转八进制是多少？
+```
+console.log(parseInt('f5',16).toString(8)); // 365
+```
+我的做法使用十进制中转一下，还是挺好理解的。
+<!-- markdown end -->
+</div>
+<div class="entry" id="main">
+<!-- content -->
+<p>最近再看面试题，看到一道阿里的面试题要求将十进制转化为二进制。这个问题不难，就是考细节。但往往就是这种细节得东西最容易忘，所以写下来分享一下也当做个人笔记了。</p>
+
+<pre><code>let num = 10;
+//十进制转二进制
+let num2 = num.toString(2);
+let num3 = 10..toString(2);
+console.log(num2,num3); // 1010 1010
+//二进制转十进制
+let n = '1010';
+let n10 = parseInt(n,2);
+console.log(n10); // 10
+</code></pre>
+
+<p>拓展一下，如果希望十进制转八进制、十六进制呢？
+其实从上面不难看出规律，<strong>十进制转其他进制</strong>的方法：</p>
+
+<p><code>num.toString(转换后进制)</code></p>
+
+<p><strong>其他进制转十进制</strong>的方法：</p>
+
+<p><code>parseInt(num,转换前的进制)</code></p>
+
+<p>再来，<strong>其他进制转其他进制</strong>怎么算？例如十六进制数字<code>f5</code>转八进制是多少？</p>
+
+<pre><code>console.log(parseInt('f5',16).toString(8)); // 365
+</code></pre>
+
+<p>我的做法使用十进制中转一下，还是挺好理解的。</p>
+<!-- content end -->
+</div>
+<br>
+<br>
+    <div id="disqus_thread"></div>
+	<div class="footer">
+		<p>© Copyright 2014 by isnowfy, Designed by isnowfy</p>
+	</div>
+</div>
+<script src="main.js"></script>
+<script id="content" type="text/mustache">
+    <h1>{{title}}</h1>
+    <div class="tag">
+    {{date}}
+    {{#tags}}
+    <a href="/#/tag/{{name}}">#{{name}}</a>
+    {{/tags}}
+    </div>
+</script>
+<script id="pagesTemplate" type="text/mustache">
+    {{#pages}}
+    <li>
+        <a href="{{path}}">{{title}}</a>
+    </li>
+    {{/pages}}
+</script>
+<script>
+$(document).ready(function() {
+    $.ajax({
+        url: "main.json",
+        type: "GET",
+        dataType: "json",
+        success: function(data) {
+            $("#title").html(data.name);
+            var pagesTemplate = Hogan.compile($("#pagesTemplate").html());
+            var pagesHtml = pagesTemplate.render({"pages": data.pages});
+            $("#pages").append(pagesHtml);
+            //path
+            var path = "进制转换.html";
+            //path end
+            var now = 0;
+            for (var i = 0; i < data.posts.length; ++i)
+                if (path == data.posts[i].path)
+                    now = i;
+            var post = data.posts[now];
+            var tmp = post.tags.split(" ");
+            var tags = [];
+            for (var i = 0; i < tmp.length; ++i)
+                if (tmp[i].length > 0)
+                    tags.push({"name": tmp[i]});
+            var contentTemplate = Hogan.compile($("#content").html());
+            var contentHtml = contentTemplate.render({"title": post.title, "tags": tags, "date": post.date});
+            $("#main").prepend(contentHtml);
+            if (data.disqus_shortname.length > 0) {
+                var disqus_shortname = data.disqus_shortname;
+                (function() {
+                    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+                    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+                    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+                })();
+            }
+        }
+    });
+});
+</script>
+<script src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ["\\(", "\\)"]], processEscapes: true}});
+</script>
+</body>
+</html>
